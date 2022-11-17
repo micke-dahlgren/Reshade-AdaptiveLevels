@@ -1,3 +1,9 @@
+/**
+ * Adaptive Levels
+ * by Mikael Dahlgren ~ zoidbun
+ * https://github.com/micke-dahlgren
+ */
+
 #include "ReShade.fxh"
 #include "./AdaptiveLevelsDev/AdaptiveLevelsUI.fxh";
 #include "./AdaptiveLevelsDev/Adapt.fxh";
