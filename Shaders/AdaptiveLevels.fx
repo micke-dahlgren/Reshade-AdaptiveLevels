@@ -24,7 +24,7 @@ sampler SourceForLevelGatheringSampler {
   MinFilter = POINT; 
   MipFilter = POINT;
 };
-
+      
 texture2D PrevLevelDataTarget { Width = 1; Height = 1; };
 sampler PrevLevelDataSampler { Texture = PrevLevelDataTarget; };
 
@@ -70,7 +70,7 @@ float3 DebugViz(float2 pos, float2 texcoord, float3 levels, float3 outcol){
     }
   }
   return outcol;
-}
+} 
 
 float3 WriteToCurrLevelData(float4 pos : SV_Position, float2 texcoord : TexCoord) : SV_Target
 {
@@ -78,10 +78,11 @@ float3 WriteToCurrLevelData(float4 pos : SV_Position, float2 texcoord : TexCoord
   float3 prevLevels = tex2Dfetch(PrevLevelDataSampler, float2(0,0)).rgb; 
   float3 currLevels;
   Adapt::GetLevels(pos, SourceForLevelGatheringSampler, currLevels);
-  float adaptionSpeed = saturate(0.815 + UI_Adaption_Speed * FRAMETIME * 0.01);
-  return lerp(currLevels, prevLevels, adaptionSpeed);
+  float dt = FRAMETIME * 0.001;
+  float adaptionSpeed = saturate(dt / max(UI_Adaption_Speed, 0.001));
+  return lerp(prevLevels, currLevels, adaptionSpeed);
 } 
-
+     
 float3 Main(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
 {
   if(UI_Utility::isEffectInvisible()){discard;}
@@ -92,13 +93,13 @@ float3 Main(float4 pos : SV_Position, float2 texcoord : TEXCOORD) : SV_Target
   float3 levels = tex2D(CurrLevelDataSampler, float2(0,0));
   
   luma = Adapt::ApplyLevels(luma, levels, texcoord);
-  
+   
   // bring back color
-  float3 color = saturate(luma + chroma);
+  float3 color = saturate(luma + chroma); 
 
   // debug sample source
   if(UI_DEBUG_VIEW != 0){
-    return DebugViz(pos, texcoord, levels, lerp(original,color,UI_Strength));
+    return DebugViz(pos, texcoord, levels, original);
   }
   return lerp(original,color,UI_Strength);
 }

@@ -1,13 +1,5 @@
 #include "ReShadeUI.fxh"
 
-// uniform int UI_TEST <
-// 	ui_type = "combo";
-// 	ui_label = "Source of the mask";
-// 	ui_items = "Performance\0" 
-// 						 "Balanced\0"	
-// 						 "Ultra\0";	
-// > = 1;
-
 uniform float UI_Strength < __UNIFORM_SLIDER_FLOAT1
 	ui_type = "drag";
 	ui_min = 0.0; ui_max = 1.0;
@@ -30,7 +22,7 @@ uniform float UI_White_Mix < __UNIFORM_SLIDER_FLOAT1
 	ui_label = "Brightening Mix";
 > = 1;
 
-uniform int UI_Black_Limit < __UNIFORM_SLIDER_INT1
+uniform float UI_Black_Limit < __UNIFORM_SLIDER_FLOAT1
 	ui_category = "Level Limits";
 	ui_type = "drag";
 	ui_min = 0; ui_max = 255; ui_step=1;
@@ -38,7 +30,7 @@ uniform int UI_Black_Limit < __UNIFORM_SLIDER_INT1
 	ui_label = "Darkening Limit";
 > = 32;
 
-uniform int UI_White_Limit < __UNIFORM_SLIDER_INT1
+uniform float UI_White_Limit < __UNIFORM_SLIDER_FLOAT1
 	ui_category = "Level Limits";
 	ui_type = "drag";
 	ui_min = 0; ui_max = 255; ui_step=1;
@@ -50,10 +42,11 @@ uniform float UI_Adaption_Speed < __UNIFORM_SLIDER_FLOAT1
 	ui_category = "Adjustments";
 	ui_type = "slider";
 	ui_label = "Adaptions Speed";
-	ui_tooltip = "How fast the adaption will be. Lower is faster";
-	ui_min = 0.0; ui_max = 1.0;
+	ui_tooltip = "How fast in seconds the adaption will be. Lower is faster";
+	ui_min = 0.00;
+	ui_max = 2.0;
 	ui_step = 0.01;
-> = 0.85;
+> = 0.5;
 
 
 uniform float UI_Saturation < __UNIFORM_SLIDER_FLOAT1

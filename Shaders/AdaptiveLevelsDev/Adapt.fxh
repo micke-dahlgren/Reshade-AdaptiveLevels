@@ -77,35 +77,28 @@ namespace Adapt {
 void GetLevels(float4 pos, sampler samp, out float3 ret)
 	{
     // [0]: darkest value, [2]: brightest value, [3]: unused, reserved for avg value
-    float3 levels = float3(2,-2,0);
+    float3 levels = float3(1,-1,0);
 
     LoopExpression loopExp;
     float2 sampSize = tex2Dsize(samp);
     loopExp = getLoopExpression(sampSize);
     doLoop(pos, loopExp, samp, sampSize, levels);
 
-    // if no minmax were found
-    levels.x = levels.x == 2 ? 0 : levels.x;
-    levels.y = levels.y == -2 ? 1 : levels.y;
 		ret = levels;
 	}
 
   float3 ApplyLevels(float3 luma, float3 levels, float2 texcoord){
-    float BlackPoint = lerp(0, levels.x, UI_Black_Mix) * 255;
-    float WhitePoint = lerp(1, levels.y, UI_White_Mix) * 255; 
+    float BlackPoint = lerp(0, levels.x, UI_Black_Mix);
+    float WhitePoint = lerp(1, levels.y, UI_White_Mix); 
 
-    BlackPoint = min(BlackPoint, UI_Black_Limit);
-    WhitePoint = max(WhitePoint, UI_White_Limit);
+    BlackPoint = min(BlackPoint, UI_Black_Limit/255.0);
+    WhitePoint = max(WhitePoint, UI_White_Limit/255.0);
 
-    if (BlackPoint == WhitePoint){
-      BlackPoint -= 1;
-      WhitePoint += 1;
-    }
-    float bp = BlackPoint / 255;
-    float wp = 255.0 / (WhitePoint - BlackPoint);
-    // end
-
+    if (BlackPoint == WhitePoint){WhitePoint += 1;}
+    float bp = BlackPoint;
+    float wp = 1 / (WhitePoint - BlackPoint);
     return saturate(luma * wp - (bp *  wp));
+
   }
 
 }
